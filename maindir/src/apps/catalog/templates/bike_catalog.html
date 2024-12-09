@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Bike Catalog{% endblock %}
+
+{% block content %}
+    <h1>Bike Catalog</h1>
+    <form method="get" action="{% url 'bike_catalog' %}" class="filter-form">
+        <div class="filter-group">
+            <label>Build:</label>
+            {% for build in builds %}
+                <label class="checkbox-label">
+                    <input type="checkbox" name="build" value="{{ build }}" {% if build in selected_builds %}checked{% endif %}>
+                    {{ build }}
+                </label>
+            {% endfor %}
+        </div>
+
+        <div class="filter-group">
+            <label>Type:</label>
+            {% for type in types %}
+                <label class="checkbox-label">
+                    <input type="checkbox" name="type" value="{{ type }}" {% if type in selected_types %}checked{% endif %}>
+                    {{ type }}
+                </label>
+            {% endfor %}
+        </div>
+
+        <div class="filter-group">
+            <label>Type Suspension:</label>
+            {% for type_suspension in type_suspensions %}
+                <label class="checkbox-label">
+                    <input type="checkbox" name="type_suspension" value="{{ type_suspension }}" {% if type_suspension in selected_type_suspensions %}checked{% endif %}>
+                    {{ type_suspension }}
+                </label>
+            {% endfor %}
+        </div>
+
+        <div class="filter-group">
+            <label for="min_price">Min Price:</label>
+            <input type="number" name="min_price" id="min_price" value="{{ min_price }}">
+        </div>
+
+        <div class="filter-group">
+            <label for="max_price">Max Price:</label>
+            <input type="number" name="max_price" id="max_price" value="{{ max_price }}">
+        </div>
+
+        <div class="filter-group">
+            <label for="sort_by">Sort By:</label>
+            <select name="sort_by" id="sort_by">
+                <option value="">--Select--</option>
+                <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest</option>
+                <option value="popular" {% if sort_by == 'popular' %}selected{% endif %}>Popular</option>
+                <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Price (Low to High)</option>
+                <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Price (High to Low)</option>
+            </select>
+        </div>
+
+        <button type="submit">Apply Filters</button>
+    </form>
+
+    <div class="product-list">
+        {% for product in products %}
+            <div class="product-item">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                <h2 class="product-name">{{ product.name }}</h2>
+                <p class="product-build">Build: {{ product.build }}</p>
+                <p class="product-type">Type: {{ product.type }}</p>
+                <p class="product-type-suspension">Type Suspension: {{ product.type_suspension }}</p>
+                <p class="product-description">{{ product.description|truncatechars:40 }}</p>
+                <p class="product-price">Price: {{ product.price }}₽</p>
+                <a href="{% url 'product_detail' product.id %}" class="product-link">Buy Now</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

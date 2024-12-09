@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Cart Detail{% endblock %}
+
+{% block content %}
+    <h1>Cart Detail</h1>
+    <ul>
+        {% for item in cart_items %}
+            <li>
+                {{ item.quantity }} x {{ item.product.name }} - ${{ item.product.price }}
+                <a href="{% url 'remove_from_cart' item.id %}">Remove</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <p>Total Price: ${{ total_price }}</p>
+    <form method="post" action="{% url 'create_order' %}">
+        {% csrf_token %}
+        <button type="submit">Create Order</button>
+    </form>
+{% endblock %}

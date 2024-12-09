@@ -172,3 +172,93 @@ form input[type="submit"]:hover {
     color: #856404;
     border: 1px solid #ffeeba;
 }
+
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.filter-group {
+    margin: 10px;
+}
+
+.filter-group label {
+    margin-right: 5px;
+}
+
+.checkbox-label {
+    display: block;
+    margin: 5px 0;
+}
+
+.filter-form input, .filter-form select {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.filter-form button {
+    margin: 10px;
+    padding: 5px 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.filter-form button:hover {
+    background-color: #2980b9;
+}
+
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px;
+}
+
+.product-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+}
+
+.product-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.product-name {
+    font-size: 1.5em;
+    margin: 10px 0;
+    color: #333;
+}
+
+.product-build, .product-type, .product-type-suspension, .product-description, .product-price {
+    font-size: 1em;
+    color: #666;
+    margin: 5px 0;
+}
+
+.product-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.product-link:hover {
+    background-color: #2980b9;
+}

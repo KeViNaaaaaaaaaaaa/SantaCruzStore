@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+    <h1>{{ product.name }}</h1>
+    <div class="product-detail">
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+        <div class="product-info">
+            <p class="product-brand"><strong>Brand:</strong> {{ product.brand }}</p>
+            <p class="product-build"><strong>Build:</strong> {{ product.build }}</p>
+            <p class="product-type"><strong>Type:</strong> {{ product.type }}</p>
+            <p class="product-type-suspension"><strong>Type Suspension:</strong> {{ product.type_suspension }}</p>
+            <p class="product-description"><strong>Description:</strong> {{ product.description }}</p>
+            <p class="product-price"><strong>Price:</strong> {{ product.price }}₽</p>
+            <p class="product-popularity"><strong>Views:</strong> {{ product.popularity }}</p>
+            <a href="{% url 'add_to_cart' product.id %}" class="product-link">Buy Now</a>
+        </div>
+    </div>
+{% endblock %}

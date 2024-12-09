@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <h1>Popular Products This Week</h1>
+    <div class="product-list">
+        {% for product in products %}
+            <div class="product-item">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                <h2 class="product-name">{{ product.name }} {{ product.build }}</h2>
+                <p class="product-description">{{ product.description|truncatechars:100 }}</p>
+                <p class="product-price">{{ product.price }}</p>
+                <a href="#" class="product-link">Buy Now</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

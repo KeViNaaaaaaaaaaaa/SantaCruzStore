@@ -1,14 +1,6 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth.models import User
 
-from django.conf import settings
-
-
-class RefreshToken(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='refresh_token')
-    token = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='pizda')

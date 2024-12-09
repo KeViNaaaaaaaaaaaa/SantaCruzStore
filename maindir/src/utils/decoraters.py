@@ -6,6 +6,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from utils.helpers import decode_jwt, create_jwt
 import jwt
+from django.contrib.auth import logout
 # from apps.authentication.models import RefreshToken
 
 from config import settings
@@ -78,6 +79,7 @@ def token_required(f):
                     response.set_cookie('access_token', access_token, httponly=True)
                     return response
                 else:
+                    logout(request)
                     return HttpResponseRedirect("/api/auth/login")
                     # return render(request, 'login.html')
                     # return JsonResponse({'error': 'Invalid token type'}, status=400)

@@ -1,4 +1,174 @@
-*{
+/* base.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+#header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+    text-align: right;
+}
+
+#header a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+#header a:hover {
+    text-decoration: underline;
+}
+
+#content {
+    padding: 20px;
+    background-color: #fff;
+    margin: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+}
+
+h2 {
+    color: #333;
+    margin-top: 20px;
+}
+
+p {
+    color: #666;
+}
+
+form {
+    margin-top: 20px;
+}
+
+form p {
+    margin: 10px 0;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="date"],
+form input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+form input[type="submit"] {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+form input[type="submit"]:hover {
+    background-color: #555;
+}
+
+.profile-info {
+    margin-bottom: 20px;
+}
+
+.profile-info img {
+    border-radius: 50%;
+    margin-top: 10px;
+}
+
+.profile-actions {
+    margin-top: 20px;
+}
+
+.edit-button, .logout-button, .back-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.edit-button:hover, .logout-button:hover, .back-button:hover {
+    background-color: #555;
+}
+
+.logout-form {
+    display: inline;
+}
+
+.profile-edit {
+    margin-top: 20px;
+}
+
+.profile-edit form {
+    display: none;
+}
+
+.profile-edit form.active {
+    display: block;
+}
+
+.profile-edit .edit-button {
+    margin-top: 10px;
+}
+
+.messages {
+    list-style: none;
     padding: 0;
     margin: 0;
+}
+
+.messages li {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    position: relative;
+}
+
+.messages li a.close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    text-decoration: none;
+    color: inherit;
+    font-size: 16px;
+}
+
+/* Стили для сообщений об ошибках */
+.messages li.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Стили для сообщений об успехе */
+.messages li.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* Стили для информационных сообщений */
+.messages li.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* Стили для предупреждающих сообщений */
+.messages li.warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
 }

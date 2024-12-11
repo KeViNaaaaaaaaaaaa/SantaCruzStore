@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load socialaccount %}
 {% block title %}Log-in{% endblock %}
 {% block content %}
     <h1>Log-in</h1>
@@ -21,6 +20,6 @@
         <p><a href="{% url "password_reset" %}">Forgotten your password?</a></p>
     </div>
     <li class="google">
-        <a href="{% provider_login_url "google" %}">Login with Google</a>
+    <a href="{% url "social:begin" "google-oauth2" %}">Login with Google</a>
 </li>
 {% endblock %}

@@ -19,11 +19,12 @@ class ProfileEditForm(forms.ModelForm):
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput)
+    email = forms.EmailField(max_length=254, help_text='Required. Enter a valid email address.')
 
 
     class Meta:
         model = User
-        fields = ('username',)
+        fields = ('username', 'email')
 
     def clean_password2(self):
         cd = self.cleaned_data

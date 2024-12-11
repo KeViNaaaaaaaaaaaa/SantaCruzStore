@@ -1,9 +1,10 @@
 from django.urls import path, re_path, include
 from django.contrib.auth import views as auth_views
-from apps.authentication.views import register, user_login, logout_user
+from apps.authentication.views import register, user_login, logout_user, activate
 
 urlpatterns = [
     path('register/', register, name='register'),
+    re_path(r'^confirm-email/(?P<uidb64>[-\w]+)/(?P<token>[-\w]+)/$', activate, name='confirm_email'),
     path('login/', user_login, name='login'),
     path('logout/', logout_user, name='logout'),
     path('password-change/', auth_views.PasswordChangeView.as_view(), name='password_change'),

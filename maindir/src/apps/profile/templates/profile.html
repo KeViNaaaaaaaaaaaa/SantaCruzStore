@@ -23,17 +23,9 @@
     <div class="profile-actions">
         <a href="{% url 'profile_edit' %}" class="edit-button">Edit Profile</a>
 
-        <form action="{% url 'send_activation_email' %}" method="post" class="send_activation_email">
-            {% csrf_token %}
-            <button type="submit" class="verify-email-button">Verify Email</button>
-        </form>
-
         <form action="{% url 'logout' %}" method="post" class="logout-form">
             {% csrf_token %}
             <button type="submit" class="logout-button">Logout</button>
         </form>
-        <li class="google">
-            <a href="{% url "social:begin" "google-oauth2" %}">Login with Google</a>
-        </li>
     </div>
 {% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Verify Email{% endblock %}
+{% block content %}
+    <h1>Verify Email</h1>
+    <p>Please enter your email to verify your account:</p>
+    <form action="{% url 'profile_email_for_verify' %}" method="post">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <p><input type="submit" value="Verify Email"></p>
+    </form>
+{% endblock %}

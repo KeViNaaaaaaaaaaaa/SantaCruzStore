@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}dsd{% endblock %}
+
+{% block content %}
+    <h1>Your account is create</h1>
+    <p>An email has been sent to your email address. Please check your inbox to verify your account.</p>
+    <p>If you don't see the email, please check your spam folder.</p>
+    <a href="{% url 'login' %}" class="btn btn-primary">Login into account</a>
+{% endblock %}

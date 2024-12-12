@@ -7,9 +7,11 @@ from django.shortcuts import redirect, render
 from utils.helpers import decode_jwt, create_jwt
 import jwt
 from django.contrib.auth import logout
-# from apps.authentication.models import RefreshToken
+# from apps.auth_user.models import RefreshToken
 
 from config import settings
+
+from apps.profile.models import Profile
 
 
 # from apps.authentication.views import refresh_token
@@ -93,6 +95,32 @@ def token_required(f):
             return JsonResponse({'error': 'Invalid token'}, status=401)
 
         request.user = payload
+        return f(request, *args, **kwargs)
+
+    return decorated
+
+
+def email_verified_required(f):
+    """
+    Декоратор, который проверяет, подтверждён ли email пользователя.
+    Если email не подтверждён, возвращает ошибку 403 (Forbidden).
+    """
+    @wraps(f)
+    def decorated(request, *args, **kwargs):
+        user_payload = request.user
+        if not user_payload:
+            return JsonResponse({'error': 'User not authenticated'}, status=401)
+
+        try:
+            # Получаем пользователя и профиль
+            user = User.objects.get(username=user_payload)
+            profile = Profile.objects.get(user=user)
+        except (User.DoesNotExist, Profile.DoesNotExist):
+            return JsonResponse({'error': 'User or profile not found'}, status=404)
+
+        if not profile.email_confirmed:
+            return JsonResponse({'error': 'Email not verified'}, status=403)
+
         return f(request, *args, **kwargs)
 
     return decorated

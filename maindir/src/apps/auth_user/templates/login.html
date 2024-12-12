@@ -21,6 +21,12 @@
         <p><a href="{% url "password_reset" %}">Forgotten your password?</a></p>
     </div>
     <li class="google">
-        <a href="{% provider_login_url "google" %}">Login with Google</a>
+       <a href="http://127.0.0.1:8000/accounts/google/login/?process=login&next=%2Faccounts%2Femail%2F">
+    Войти через Google
+</a>
 </li>
+
+    {% if user.is_authenticated %}
+        <p>You are already logged in as {{ user.username }}. <a href="{% url 'account_logout' %}">Logout</a> to create a new account.</p>
+    {% endif %}
 {% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Google Authentication{% endblock %}
+
+{% block content %}
+    <h1>Google Authentication</h1>
+    <p>You are logged in as <strong>{{ user.username }}</strong>.</p>
+    <p>To complete the authentication process, please click the button below:</p>
+    <form action="{% url 'jwtgoogle' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="username" value="{{ user.username }}">
+        <input type="hidden" name="password" value="{{ user.password }}">
+        <button type="submit" class="button">Complete Authentication</button>
+    </form>
+{% endblock %}

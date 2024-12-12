@@ -6,7 +6,8 @@
     <h1>Your Profile</h1>
     <p>Welcome to your profile, {{ user_obj.username }}.</p>
 
-    <div class="profile-info">
+    <div class="profile_subjects">
+        <div class="profile-info">
         <h2>Personal Information</h2>
         <p><strong>First Name:</strong> {{ user_obj.first_name }}</p>
         <p><strong>Last Name:</strong> {{ user_obj.last_name }}</p>
@@ -37,4 +38,25 @@
             <button type="submit" class="logout-button">Logout</button>
         </form>
     </div>
+    </div>
+
+
+
+    <div class="site_info">
+    <div class="orders_info">
+        <h1>Order List</h1>
+        <ul>
+            {% for order in orders %}
+                <li>
+                    <a href="{% url 'order_detail' order.id %}">Order #{{ order.id }}</a>
+                    - ${{ order.total_price }} - {{ order.status }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="group_info">
+        <h1>Group info</h1>
+    </div>
+    </div>
 {% endblock %}
+

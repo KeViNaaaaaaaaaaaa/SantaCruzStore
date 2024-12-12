@@ -61,7 +61,10 @@ def user_login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-        profile = Profile.objects.get(user=user)
+        try:
+            profile = Profile.objects.get(user=user)
+        except Profile.DoesNotExist:
+            return JsonResponse({'error': 'User or profile not found'}, status=404)
         # print(profile)
         if user is not None:
 

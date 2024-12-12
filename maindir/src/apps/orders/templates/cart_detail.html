@@ -13,7 +13,7 @@
         {% endfor %}
     </ul>
     <p>Total Price: ${{ total_price }}</p>
-    <form method="post" action="{% url 'create_order' %}">
+    <form method="post" action="{% url 'cart_detail' %}">
         {% csrf_token %}
         <button type="submit">Create Order</button>
     </form>

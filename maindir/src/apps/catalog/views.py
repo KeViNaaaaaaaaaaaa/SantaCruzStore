@@ -1,9 +1,38 @@
+from datetime import timedelta
+
 from django.shortcuts import render, get_object_or_404
 from .models import Product
+from apps.orders.models import OrderItem
+from django.utils import timezone
 
 def home(request):
+    now = timezone.now()
+    ten_minutes_ago = now - timedelta(days=7)
+
+
     products = Product.objects.all()
-    return render(request, 'home.html', {'products': products})
+    order_item = OrderItem.objects.filter(created_at__range=(ten_minutes_ago, now))
+    sell_product = {}
+    for i in products:
+        sell_product.setdefault(f'{i}|{i.build}', 0)
+        for j in order_item:
+            if j.product == i and j.product.build == i.build:
+                sell_product[f'{i}|{i.build}'] += j.quantity
+    sell_product = sorted(sell_product.items(), key=lambda x: (-x[1], x[0]))
+    print(sell_product)
+    print(products)
+
+    bikes = []
+    for product_name_build, _ in sell_product[:4]:
+        name, build = product_name_build.split('|')
+        print(name)
+        print(build)
+        product = Product.objects.filter(name=name, build=build).first()
+        print(product)
+        if product:
+            bikes.append(product)
+    print(bikes)
+    return render(request, 'home.html', {'products': bikes})
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -13,6 +42,8 @@ def product_detail(request, product_id):
 
 
 def bike_catalog(request):
+    profile = request.user.profile
+    print(profile)
     products = Product.objects.all()
 
     # Получаем все уникальные значения для фильтрации

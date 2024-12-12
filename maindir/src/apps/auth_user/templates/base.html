@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 {% load static %}
-<html>
+<html lang="en">
 <head>
-    <title>{% block title %}{% endblock %}</title>
-    <link href="{% static "css/base.css" %}" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Website{% endblock %}</title>
+    <link rel="stylesheet" href="{% static "css/base.css" %}">
 </head>
 <body>
-<div id="header">
-    <span class="user">
-        {% if request.user.is_authenticated %}
-             Hello {{ user.username }},
-            <a href="{% url "logout" %}">Logout</a>
-        {% else %}
-            <a href="{% url "login" %}">Log-in</a>
+    <!-- Header -->
+    <div id="header">
+        <div class="header-left">
+            <a href="{% url 'home' %}">Главная</a>
+            <a href="{% url 'bike_catalog' %}">Каталог</a>
+            <a href="{% url 'cart_detail' %}">Корзина</a>
+            <a href="{% url 'profile' %}">Профиль</a>
+        </div>
+        <div class="header-right">
+            {% if user.is_authenticated %}
+                {% if not photo %}
+                <img src="/media/users/2024/12/12/santa-cruz-bronson-cc-x0-axs-rsv-2024-491972-1_Rqlx7yL.png" alt="Profile Photo" width="150">
+                {% else %}
+                <img src="{{ photo }}" alt="Profile Photo" width="150">
+                {% endif %}
+                <span>{{ user.username }}</span>
+                <a href="{% url 'account_logout' %}">Выйти</a>
+            {% else %}
+                <a href="{% url 'login' %}">Войти</a>
+            {% endif %}
+        </div>
+    </div>
 
-        {% endif %}
-    </span>
-</div>
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li class="{{ message.tags }}">
-                {{ message|safe }}
-                <a href="#" class="close">✖</a>
-            </li>
-        {% endfor %}
-    </ul>
-{% endif %}
-<div id="content">
-    {% block content %}
-    {% endblock %}
-</div>
+    <!-- Content -->
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
 </body>
 </html>

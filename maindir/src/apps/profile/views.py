@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib import messages
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as django_login
 from django.http import JsonResponse
 from utils.decoraters import token_required, email_verified_required
@@ -21,6 +21,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .forms import EmailVerifyForm
+from apps.orders.models import Order
 
 
 @email_verified_required
@@ -61,6 +62,7 @@ def profile(request):
     user = request.user
     print(user)
     user_obj = User.objects.get(username=user['user_name'])
+    orders = Order.objects.filter(user=user_obj)
     django_login(request, user_obj, backend='django.contrib.auth.backends.ModelBackend')
     print(user_obj)
     profile_obj = Profile.objects.get(user=user_obj)
@@ -69,6 +71,7 @@ def profile(request):
         'user_obj': user_obj,
         'profile_obj': profile_obj,
         'photo': profile_obj.photo.url if profile_obj.photo else None,
+        'orders': orders,
     })
 
 @token_required
@@ -132,3 +135,11 @@ def activate(request, uidb64, token, email):
 
 def verify_done(request):
     return render(request, 'verify_done.html')
+
+@email_verified_required
+@token_required
+def order_detail(request, order_id):
+    user = request.user
+    user_obj = User.objects.get(id=user['user_id'])
+    order = get_object_or_404(Order, id=order_id, user=user_obj)
+    return render(request, 'order_detail.html', {'order': order})

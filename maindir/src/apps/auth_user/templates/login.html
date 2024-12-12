@@ -2,6 +2,7 @@
 {% load socialaccount %}
 {% block title %}Log-in{% endblock %}
 {% block content %}
+<div class="profile_info">
     <h1>Log-in</h1>
     {% if form.errors %}
         <p>
@@ -29,4 +30,6 @@
     {% if user.is_authenticated %}
         <p>You are already logged in as {{ user.username }}. <a href="{% url 'account_logout' %}">Logout</a> to create a new account.</p>
     {% endif %}
+</div>
+
 {% endblock %}

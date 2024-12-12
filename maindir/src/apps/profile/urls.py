@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import profile, profile_edit, activate, profile_email_for_verify, verify_done
+from .views import profile, profile_edit, activate, profile_email_for_verify, verify_done, order_detail
 
 urlpatterns = [
     path('profile/verify/', profile_email_for_verify, name='profile_email_for_verify'),
@@ -7,4 +7,5 @@ urlpatterns = [
     path('profile/', profile, name='profile'),
     path('profile/edit/', profile_edit, name='profile_edit'),
     path('activate/<uidb64>/<token>/<email>/', activate, name='activate'),
+    path('profile/<int:order_id>/', order_detail, name='order_detail'),
 ]

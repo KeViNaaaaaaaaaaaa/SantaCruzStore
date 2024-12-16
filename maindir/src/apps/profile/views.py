@@ -1,11 +1,14 @@
+from idlelib.autocomplete import TRY_A
+
 from django.contrib.auth.models import User
 from django.contrib import messages
+import random
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as django_login
 from django.http import JsonResponse
 from utils.decoraters import token_required, email_verified_required
-from apps.profile.models import Profile
+from apps.profile.models import Profile, Promocode
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
@@ -21,6 +24,7 @@ from apps.orders.models import Order, OrderItem, Cart
 from apps.catalog.models import Like
 from allauth.account.models import EmailAddress
 from allauth.socialaccount.models import SocialAccount
+import string
 
 
 @email_verified_required
@@ -66,6 +70,9 @@ def profile(request):
     print(user_obj)
     profile_obj = Profile.objects.get(user=user_obj)
 
+    messages_to_display = messages.get_messages(request)
+    print(messages_to_display)
+
     return render(request, 'profile.html', {
         'user_obj': user_obj,
         'profile_obj': profile_obj,
@@ -94,19 +101,35 @@ def profile_email_for_verify(request):
             })
 
             mail_subject = 'Activate your account'
-            print(activation_url)
-            message = render_to_string('acc_active_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'activation_url': activation_url,
-                'gift': default_token_generator.make_token(user),
-            })
-            to_email = email
-            email = EmailMessage(mail_subject, message, to=[to_email])
-            email.content_subtype = "html"
-            email.send()
 
-            return redirect('verify_done')
+            try:
+                acc_with_promo = Promocode.objects.get(email=email)
+                message = render_to_string('acc_active_email.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'activation_url': activation_url,
+                })
+                to_email = email
+                email = EmailMessage(mail_subject, message, to=[to_email])
+                email.content_subtype = "html"
+                email.send()
+
+                return redirect('verify_done')
+
+            except:
+
+                message = render_to_string('acc_active_email.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'activation_url': activation_url,
+                    'gift': default_token_generator.make_token(user)[:8],
+                })
+                to_email = email
+                email = EmailMessage(mail_subject, message, to=[to_email])
+                email.content_subtype = "html"
+                email.send()
+
+                return redirect('verify_done')
     else:
         form = EmailVerifyForm()
 
@@ -122,6 +145,10 @@ def activate(request, uidb64, token, email):
         user = None
 
     if user is not None and default_token_generator.check_token(user, token):
+        try:
+            Promocode.objects.get(email=email)
+        except:
+            Promocode.objects.create(promocode=token[:8], email=email)
         user.email = email
         user.save()
 

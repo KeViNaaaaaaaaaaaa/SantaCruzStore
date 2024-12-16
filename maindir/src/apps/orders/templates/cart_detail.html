@@ -7,10 +7,8 @@
 
     {% for item in cart_items %}
         <div class="cart-item">
-            <!-- Фото товара -->
             <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-item-image">
 
-            <!-- Информация о товаре -->
             <div class="cart-item-details">
                 <h3>{{ item.product.name }}</h3>
                 <p>Quantity: {{ item.quantity }}</p>
@@ -21,10 +19,14 @@
         </div>
     {% endfor %}
 
-    <!-- Общая стоимость -->
     <p class="total-price">Total Price: ${{ total_price }}</p>
 
-    <!-- Форма для создания заказа -->
+    <form method="get" action="{% url 'cart_detail' %}">
+        <label for="promocode">Промокод:</label>
+        <input type="text" id="promocode" name="promocode" class="promocode" value="{{ request.GET.promocode }}">
+        <button type="submit">promo</button>
+    </form>
+
     <form method="post" action="{% url 'cart_detail' %}">
         {% csrf_token %}
         <button type="submit" class="create-order-button">Create Order</button>

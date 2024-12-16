@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from utils.decoraters import token_required, email_verified_required
 from .models import Order, OrderItem, Cart
 from apps.catalog.models import Product
+from apps.profile.models import Promocode
 from django.contrib.auth.models import User
 
 
@@ -43,12 +44,26 @@ def cart_detail(request):
 
 
     cart_items = Cart.objects.filter(user=user_obj)
-    total_price = sum(item.product.price * item.quantity for item in cart_items)
+    total_price = round(sum(item.product.price * item.quantity for item in cart_items), 2)
+
+    promocode = request.GET.get('promocode')
+    promo_valid = False
+    print(user_obj.email)
+    try:
+        promo = Promocode.objects.get(email=user_obj.email)
+        print(promocode, promo.promocode, )
+        if promocode == promo.promocode and promo.val_of_activate == 1:
+            total_price = round((total_price * 90 / 100), 2)
+            promo_valid = True
+            print('dsdsdsdfsdsdfsdfsdfsdsdfsdfsd')
+    except Promocode.DoesNotExist:
+        pass
+    print(promo_valid)
     if request.method == 'POST':
         if not cart_items:
             return redirect('cart_detail')
 
-        order = Order.objects.create(user=user_obj, total_price=0)
+        order = Order.objects.create(user=user_obj, total_price=total_price)
         for cart_item in cart_items:
             OrderItem.objects.create(
                 order=order,
@@ -58,6 +73,10 @@ def cart_detail(request):
             )
             cart_item.delete()
         order.total_price = sum(item.price for item in order.items.all())
+
+        if promo_valid:
+            order.total_price = round((order.total_price * 90 / 100), 2)
+
         order.save()
         return redirect('order_detail', order_id=order.id)
     return render(request, 'cart_detail.html', {'cart_items': cart_items, 'user': user_obj, 'total_price': total_price,

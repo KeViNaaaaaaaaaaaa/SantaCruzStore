@@ -8,10 +8,8 @@
     <ul>
         {% for item in is_liked %}
         <div class="cart-item">
-            <!-- Фото товара -->
             <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-item-image">
 
-            <!-- Информация о товаре -->
             <div class="cart-item-details">
                 <h3>{{ item.product.name }}</h3>
                 <p>Price: ${{ item.product.price }}</p>

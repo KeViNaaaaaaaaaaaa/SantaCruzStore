@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <!-- Header -->
     <div id="header">
         <div class="header-left">
             <a href="{% url 'home' %}">Главная</a>
@@ -24,11 +23,11 @@
                 <a href="{% url 'logout' %}">Выйти</a>
             {% else %}
                 <a href="{% url 'login' %}">Войти</a>
+                <a href="{% url 'register' %}">Зарегистрироваться</a>
             {% endif %}
         </div>
     </div>
 
-    <!-- Content -->
     <div id="content">
         {% block content %}
         {% endblock %}

@@ -13,3 +13,11 @@ class Profile(models.Model):
 
     def __str__(self):
         return 'Profile for user {}'.format(self.user.username)
+
+class Promocode(models.Model):
+    email = models.EmailField(max_length=30)
+    promocode = models.CharField(max_length=8)
+    val_of_activate = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return 'Promokod for email {}'.format(self.email)

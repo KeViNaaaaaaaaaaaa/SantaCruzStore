@@ -1,3 +1,6 @@
+import random
+import string
+
 from django.contrib.auth.models import User
 
 from django.http import JsonResponse
@@ -7,10 +10,14 @@ from utils.helpers import create_jwt, decode_jwt
 from django.contrib.auth import authenticate
 from django.contrib.auth import logout
 from django.contrib import messages
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 
 from apps.auth_user.forms import LoginForm, UserRegistrationForm
 
 from apps.profile.models import Profile
+
+from apps.profile.models import Promocode
 
 
 def logout_user(request):
@@ -32,7 +39,8 @@ def register(request):
                 return render(request, 'register.html', {'user_form': user_form, 'error': 'Username already taken'})
 
             user = User.objects.create_user(username=username, password=password)
-            profile = Profile.objects.create(user=user, photo='/users/2024/12/12/santa-cruz-bronson-cc-x0-axs-rsv-2024-491972-1_Rqlx7yL.png')
+            profile = Profile.objects.create(user=user,
+                                             photo='/users/2024/12/12/santa-cruz-bronson-cc-x0-axs-rsv-2024-491972-1_Rqlx7yL.png')
             profile.save()
             user.save()
 
@@ -72,6 +80,7 @@ def user_login(request):
 
     return render(request, 'login.html', {'form': form})
 
+
 def google_login(request):
     user = request.user
 
@@ -87,6 +96,23 @@ def google_login(request):
         profile.photo = photo
         profile.save()
 
+    try:
+        Promocode.objects.get(email=user.email)
+    except:
+        characters = string.ascii_letters + string.digits
+        promo_code = ''.join(random.choice(characters) for i in range(8))
+        Promocode.objects.create(promocode=promo_code, email=user.email)
+        message = render_to_string('promocode_for_google_auth.html', {
+            'user': user,
+            'promo_code': promo_code,
+        })
+        to_email = user.email
+        print(to_email, 'sdas')
+        mail_subject = 'Promocode for your account'
+        email = EmailMessage(mail_subject, message, to=[to_email])
+        email.content_subtype = "html"
+        email.send()
+
     access_token = create_jwt(user.id, user.username, token_type='access')
     refresh_token = create_jwt(user.id, user.username, token_type='refresh')
 
@@ -97,5 +123,3 @@ def google_login(request):
     response.set_cookie('access_token', access_token, httponly=True)
     response.set_cookie('refresh_token', refresh_token, httponly=True, secure=True)
     return response
-
-

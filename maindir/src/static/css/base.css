@@ -1,4 +1,3 @@
-/* base.css */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -30,7 +29,6 @@ body {
     text-decoration: underline;
 }
 
-/* Profile Photo */
 .profile-photo {
     width: 40px;
     height: 40px;
@@ -161,28 +159,27 @@ form input[type="submit"]:hover {
     font-size: 16px;
 }
 
-/* Стили для сообщений об ошибках */
+
 .messages li.error {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
 
-/* Стили для сообщений об успехе */
+
 .messages li.success {
     background-color: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
 }
 
-/* Стили для информационных сообщений */
+
 .messages li.info {
     background-color: #d1ecf1;
     color: #0c5460;
     border: 1px solid #bee5eb;
 }
 
-/* Стили для предупреждающих сообщений */
 .messages li.warning {
     background-color: #fff3cd;
     color: #856404;
@@ -291,7 +288,7 @@ form input[type="submit"]:hover {
     background-color: #fff;
 }
 
-/* Фото товара */
+
 .cart-item-image {
     width: 150px;
     height: 100px;
@@ -300,7 +297,7 @@ form input[type="submit"]:hover {
     margin-right: 20px;
 }
 
-/* Информация о товаре */
+
 .cart-item-details {
     flex-grow: 1;
 }
@@ -315,7 +312,7 @@ form input[type="submit"]:hover {
     font-size: 14px;
 }
 
-/* Кнопка удаления */
+
 .remove-button {
     display: inline-block;
     padding: 5px 10px;
@@ -331,14 +328,14 @@ form input[type="submit"]:hover {
     background-color: #cc0000;
 }
 
-/* Общая стоимость */
+
 .total-price {
     font-size: 20px;
     font-weight: bold;
     margin-top: 20px;
 }
 
-/* Кнопка создания заказа */
+
 .create-order-button {
     padding: 10px 20px;
     background-color: #3498db;
@@ -373,16 +370,16 @@ form input[type="submit"]:hover {
     border: none;
     cursor: pointer;
     font-size: 24px;
-    color: black; /* Сердечко изначально белое */
-    transition: color 0.3s ease; /* Плавное изменение цвета */
+    color: black;
+    transition: color 0.3s ease;
 }
 
 .like-button:hover {
-    color: #ff4d4d; /* Сердечко становится красным при наведении */
+    color: #ff4d4d;
 }
 
 .like-button.liked {
-    color: #ff4d4d; /* Сердечко становится красным, если продукт лайкнут */
+    color: #ff4d4d;
 }
 
 #form_like{

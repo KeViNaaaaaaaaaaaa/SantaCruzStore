@@ -4,6 +4,7 @@ from functools import wraps
 from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
+from django.contrib.auth.models import AnonymousUser
 from utils.helpers import decode_jwt, create_jwt
 import jwt
 from django.contrib.auth import logout
@@ -56,6 +57,8 @@ from apps.profile.models import Profile
 def token_required(f):
     @wraps(f)
     def decorated(request, *args, **kwargs):
+        if isinstance(request.user, AnonymousUser):
+            return f(request, *args, **kwargs)
         token = request.COOKIES.get('access_token')
         if not token:
             return JsonResponse({'error': 'Token is missing'}, status=401)
@@ -101,18 +104,12 @@ def token_required(f):
 
 
 def email_verified_required(f):
-    """
-    Декоратор, который проверяет, подтверждён ли email пользователя.
-    Если email не подтверждён, возвращает ошибку 403 (Forbidden).
-    """
     @wraps(f)
     def decorated(request, *args, **kwargs):
         user_payload = request.user
         if not user_payload:
             return JsonResponse({'error': 'User not authenticated'}, status=401)
-
         try:
-            # Получаем пользователя и профиль
             user = User.objects.get(username=user_payload)
             profile = Profile.objects.get(user=user)
         except (User.DoesNotExist, Profile.DoesNotExist):

@@ -222,6 +222,7 @@ form input[type="submit"]:hover {
     color: #fff;
     border: none;
     border-radius: 5px;
+    height: 28px;
     cursor: pointer;
 }
 
@@ -277,4 +278,114 @@ form input[type="submit"]:hover {
 
 .product-link:hover {
     background-color: #2980b9;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #fff;
+}
+
+/* Фото товара */
+.cart-item-image {
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 20px;
+}
+
+/* Информация о товаре */
+.cart-item-details {
+    flex-grow: 1;
+}
+
+.cart-item-details h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+}
+
+.cart-item-details p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+/* Кнопка удаления */
+.remove-button {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #ff4d4d;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.remove-button:hover {
+    background-color: #cc0000;
+}
+
+/* Общая стоимость */
+.total-price {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* Кнопка создания заказа */
+.create-order-button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.create-order-button:hover {
+    background-color: #2980b9;
+}
+
+.product-link-order {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.product-link-order:hover {
+    background-color: #2980b9;
+}
+
+.like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: black; /* Сердечко изначально белое */
+    transition: color 0.3s ease; /* Плавное изменение цвета */
+}
+
+.like-button:hover {
+    color: #ff4d4d; /* Сердечко становится красным при наведении */
+}
+
+.like-button.liked {
+    color: #ff4d4d; /* Сердечко становится красным, если продукт лайкнут */
+}
+
+#form_like{
+    text-align: right;
+    margin-top: 0px;
 }

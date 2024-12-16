@@ -4,13 +4,20 @@
 
 {% block content %}
     <h1>Bike Catalog</h1>
+<form method="get">
+    <label for="name">Поиск:</label>
+    <input type="text" name="name" id="name" value="{{ request.GET.name }}">
+
+    <button type="submit">Фильтровать</button>
+</form>
     <form method="get" action="{% url 'bike_catalog' %}" class="filter-form">
+        <!-- Фильтры -->
         <div class="filter-group">
             <label>Build:</label>
             {% for build in builds %}
-                <label class="checkbox-label">
-                    <input type="checkbox" name="build" value="{{ build }}" {% if build in selected_builds %}checked{% endif %}>
-                    {{ build }}
+            <label class="checkbox-label">
+                <input type="checkbox" name="build" value="{{ build }}" {% if build in selected_builds %}checked{% endif %}>
+                {{ build }}
                 </label>
             {% endfor %}
         </div>
@@ -62,6 +69,17 @@
     <div class="product-list">
         {% for product in products %}
             <div class="product-item">
+                <form id="form_like" method="post" action="{% url 'bike_catalog' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <button type="submit" class="like-button {% if product in is_liked %}liked{% endif %}">
+                        {% if product in is_liked %}
+                            <i class="fas fa-heart"></i>
+                        {% else %}
+                            <i class="far fa-heart"></i>
+                        {% endif %}
+                    </button>
+                </form>
                 <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
                 <h2 class="product-name">{{ product.name }}</h2>
                 <p class="product-build">Build: {{ product.build }}</p>
@@ -73,4 +91,22 @@
             </div>
         {% endfor %}
     </div>
+    <div class="pagination">
+        <span class="step-links">
+            {% if products.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ products.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ products.number }} of {{ products.paginator.num_pages }}.
+            </span>
+
+            {% if products.has_next %}
+                <a href="?page={{ products.next_page_number }}">next</a>
+                <a href="?page={{ products.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
 {% endblock %}

@@ -23,6 +23,7 @@
 
     <div class="profile-actions">
         <a href="{% url 'profile_edit' %}" class="edit-button">Edit Profile</a>
+        <a href="{% url 'profile_delete' %}" class="edit-button">Delete Profile</a>
 
         {% if not profile_obj.email_confirmed %}
         <form action="{% url 'profile_email_for_verify' %}" method="get" class="profile_email_for_verify">

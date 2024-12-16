@@ -1,7 +1,5 @@
-from datetime import timedelta
-
 from django.contrib.auth.models import User
-import requests
+
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as django_login
@@ -10,25 +8,13 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import logout
 from django.contrib import messages
 
-from apps.auth_user .forms import LoginForm, UserRegistrationForm
+from apps.auth_user.forms import LoginForm, UserRegistrationForm
 
 from apps.profile.models import Profile
-
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import EmailMessage
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.decorators import login_required
-
-from django.utils import timezone
 
 
 def logout_user(request):
     logout(request)
-    request.session.flush()
     response = render(request, 'logout.html', {'message': 'Logged out successfully'})
     response.delete_cookie('access_token')
     response.delete_cookie('refresh_token')
@@ -46,7 +32,7 @@ def register(request):
                 return render(request, 'register.html', {'user_form': user_form, 'error': 'Username already taken'})
 
             user = User.objects.create_user(username=username, password=password)
-            profile = Profile.objects.create(user=user)
+            profile = Profile.objects.create(user=user, photo='/users/2024/12/12/santa-cruz-bronson-cc-x0-axs-rsv-2024-491972-1_Rqlx7yL.png')
             profile.save()
             user.save()
 
@@ -89,14 +75,12 @@ def user_login(request):
 def google_login(request):
     user = request.user
 
-    google_profile_data = request.session.get('google_profile_data', {})
-    photo = google_profile_data.get('picture')
-
     user_obj = User.objects.get(username=user)
+
+    photo = '/users/2024/12/12/santa-cruz-bronson-cc-x0-axs-rsv-2024-491972-1_Rqlx7yL.png'
 
     try:
         profile = Profile.objects.get(user=user)
-        print(photo)
     except Profile.DoesNotExist:
         profile = Profile.objects.create(user=user)
         profile.email_confirmed = True
@@ -113,4 +97,5 @@ def google_login(request):
     response.set_cookie('access_token', access_token, httponly=True)
     response.set_cookie('refresh_token', refresh_token, httponly=True, secure=True)
     return response
+
 

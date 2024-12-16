@@ -32,7 +32,16 @@ def remove_from_cart(request, cart_item_id):
 @token_required
 def cart_detail(request):
     user = request.user
+    print(user)
     user_obj = User.objects.get(id=user['user_id'])
+    photo_true = False
+    try:
+        profile = user_obj.profile
+        photo_true = True
+    except:
+        pass
+
+
     cart_items = Cart.objects.filter(user=user_obj)
     total_price = sum(item.product.price * item.quantity for item in cart_items)
     if request.method == 'POST':
@@ -51,4 +60,5 @@ def cart_detail(request):
         order.total_price = sum(item.price for item in order.items.all())
         order.save()
         return redirect('order_detail', order_id=order.id)
-    return render(request, 'cart_detail.html', {'cart_items': cart_items, 'total_price': total_price})
+    return render(request, 'cart_detail.html', {'cart_items': cart_items, 'user': user_obj, 'total_price': total_price,
+                                                'photo': profile.photo.url if photo_true else None})

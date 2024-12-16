@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Cart Detail{% endblock %}
+{% block title %}Liked Bikes{% endblock %}
 
 {% block content %}
-    <h1>Cart Detail</h1>
-
-    {% for item in cart_items %}
+    <h1>Liked Bikes</h1>
+    <h2>Items:</h2>
+    <ul>
+        {% for item in is_liked %}
         <div class="cart-item">
             <!-- Фото товара -->
             <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-item-image">
@@ -13,20 +14,10 @@
             <!-- Информация о товаре -->
             <div class="cart-item-details">
                 <h3>{{ item.product.name }}</h3>
-                <p>Quantity: {{ item.quantity }}</p>
                 <p>Price: ${{ item.product.price }}</p>
                 <a href="{% url 'product_detail' item.product.id %}" class="product-link-order">View Product</a>
-                <a href="{% url 'remove_from_cart' item.id %}" class="remove-button">Remove</a>
             </div>
         </div>
     {% endfor %}
-
-    <!-- Общая стоимость -->
-    <p class="total-price">Total Price: ${{ total_price }}</p>
-
-    <!-- Форма для создания заказа -->
-    <form method="post" action="{% url 'cart_detail' %}">
-        {% csrf_token %}
-        <button type="submit" class="create-order-button">Create Order</button>
-    </form>
+    </ul>
 {% endblock %}

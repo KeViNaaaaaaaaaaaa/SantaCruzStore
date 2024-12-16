@@ -10,7 +10,19 @@
     <h2>Items:</h2>
     <ul>
         {% for item in order.items.all %}
-            <li>{{ item.quantity }} x {{ item.product.name }} - ${{ item.price }}</li>
-        {% endfor %}
+        <div class="cart-item">
+            <!-- Фото товара -->
+            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-item-image">
+
+            <!-- Информация о товаре -->
+            <div class="cart-item-details">
+                <h3>{{ item.product.name }}</h3>
+                <p>Quantity: {{ item.quantity }}</p>
+                <p>Price: ${{ item.product.price }}</p>
+                <a href="{% url 'product_detail' item.product.id %}" class="product-link-order">View Product</a>
+            </div>
+        </div>
+    {% endfor %}
     </ul>
+    <a href="{% url 'order_delete' order.id %}" class="remove-button">Delete</a>
 {% endblock %}

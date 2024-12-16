@@ -7,10 +7,6 @@ from django.http import JsonResponse
 from utils.decoraters import token_required, email_verified_required
 from apps.profile.models import Profile
 
-from apps.auth_user.forms import ProfileEditForm
-
-from apps.auth_user.forms import UserEditForm
-
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -20,8 +16,11 @@ from django.core.mail import EmailMessage
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from .forms import EmailVerifyForm
-from apps.orders.models import Order
+from .forms import EmailVerifyForm, UserEditForm, ProfileEditForm
+from apps.orders.models import Order, OrderItem, Cart
+from apps.catalog.models import Like
+from allauth.account.models import EmailAddress
+from allauth.socialaccount.models import SocialAccount
 
 
 @email_verified_required
@@ -51,6 +50,7 @@ def profile_edit(request):
         'profile_form': profile_form,
     })
 
+
 @token_required
 def profile(request):
     if request.method == 'POST':
@@ -60,7 +60,6 @@ def profile(request):
         return response
 
     user = request.user
-    print(user)
     user_obj = User.objects.get(username=user['user_name'])
     orders = Order.objects.filter(user=user_obj)
     django_login(request, user_obj, backend='django.contrib.auth.backends.ModelBackend')
@@ -73,6 +72,7 @@ def profile(request):
         'photo': profile_obj.photo.url if profile_obj.photo else None,
         'orders': orders,
     })
+
 
 @token_required
 def profile_email_for_verify(request):
@@ -99,6 +99,7 @@ def profile_email_for_verify(request):
                 'user': user,
                 'domain': current_site.domain,
                 'activation_url': activation_url,
+                'gift': default_token_generator.make_token(user),
             })
             to_email = email
             email = EmailMessage(mail_subject, message, to=[to_email])
@@ -136,6 +137,7 @@ def activate(request, uidb64, token, email):
 def verify_done(request):
     return render(request, 'verify_done.html')
 
+
 @email_verified_required
 @token_required
 def order_detail(request, order_id):
@@ -143,3 +145,48 @@ def order_detail(request, order_id):
     user_obj = User.objects.get(id=user['user_id'])
     order = get_object_or_404(Order, id=order_id, user=user_obj)
     return render(request, 'order_detail.html', {'order': order})
+
+
+@email_verified_required
+@token_required
+def order_delete(request, order_id):
+    user = request.user
+    user_obj = User.objects.get(id=user['user_id'])
+    order = get_object_or_404(Order, id=order_id, user=user_obj)
+    order.delete()
+    return redirect('profile')
+
+
+@token_required
+def profile_delete(request):
+    user = request.user
+    user_obj = User.objects.get(id=user['user_id'])
+    profile = Profile.objects.get(user=user_obj)
+    email_confirmed = profile.email_confirmed
+
+    if email_confirmed:
+        open_orders = Order.objects.filter(user=user_obj, status='open')
+        if open_orders.exists():
+            messages.error(request, 'You cannot delete your account because you have open orders.')
+            return redirect('profile')
+        try:
+            EmailAddress.objects.get(user=user_obj).delete()
+            SocialAccount.objects.get(user=user_obj).delete()
+        except:
+            pass
+
+
+        Order.objects.filter(user=user_obj).delete()
+        for i in Order.objects.filter(user=user_obj):
+            OrderItem.objects.filter(order=i).delete()
+        Cart.objects.filter(user=user_obj).delete()
+
+    Like.objects.filter(user=user_obj).delete()
+    Profile.objects.filter(user=user_obj).delete()
+
+    user_obj.delete()
+
+    response = render(request, 'home.html', {'message': 'Logged out successfully'})
+    response.delete_cookie('access_token')
+    response.delete_cookie('refresh_token')
+    return response

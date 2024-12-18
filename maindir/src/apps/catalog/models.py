@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class Product(models.Model):
@@ -13,6 +14,9 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/')
     created_at = models.DateTimeField(auto_now_add=True)
     popularity = models.IntegerField(default=0)
+    cost_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    val_product = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата и время создания")
 
     def __str__(self):
         return self.name
@@ -20,9 +24,8 @@ class Product(models.Model):
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата и время создания")
 
-    class Meta:
-        unique_together = ('user', 'product')
 
     def __str__(self):
         return f"{self.user.username} likes {self.product.name}"

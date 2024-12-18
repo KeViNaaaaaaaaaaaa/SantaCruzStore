@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Общая аналитика</h1>
+
+    <form method="get" class="form-group">
+        <label for="start_date">Начальная дата:</label>
+        <input type="date" name="start_date" id="start_date" value="{{ start_date }}">
+        <label for="end_date">Конечная дата:</label>
+        <input type="date" name="end_date" id="end_date" value="{{ end_date }}">
+        <button type="submit">Фильтровать</button>
+    </form>
+
+    <h2>Основные показатели</h2>
+    <ul>
+        <li><strong>Общая выручка:</strong> {{ total_revenue }} руб.</li>
+        <li><strong>Общая прибыль:</strong> {{ total_profit }} руб.</li>
+        <li><strong>Самый продаваемый товар:</strong> {{ top_selling_product.product__name }} ({{ top_selling_product.total_sold }} шт.)</li>
+    </ul>
+
+    <h2>Топ-5 товаров по прибыли</h2>
+    <ul>
+        {% for product in top_profitable_products %}
+            <li>{{ product.product__name }}: {{ product.total_profit }} руб.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Топ-5 товаров по продажам</h2>
+    <ul>
+        {% for product in top_selling_products %}
+            <li>{{ product.product__name }}: {{ product.total_sold }} шт.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Процент остатков товаров</h2>
+    <ul>
+        {% for product in stock_percentages %}
+            <li>{{ product.name }} {{ product.build }}: {{ product.quantity }} шт. ({{ product.percentage|floatformat:2 }}%)</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Аналитика по лайкам</h2>
+    <ul>
+        <li><strong>Общее количество лайков:</strong> {{ total_likes }}</li>
+        <li><strong>Самый популярный товар:</strong> {{ most_liked_product.product__name }} {{ most_liked_product.product__build }} ({{ most_liked_product.total_likes }} лайков)</li>
+    </ul>
+
+    <h3>Топ-5 самых популярных товаров по лайкам</h3>
+    <ul>
+        {% for product in top_liked_products %}
+            <li>{{ product.product__name }} {{ product.product__build }}: {{ product.total_likes }} лайков</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Аналитика по промокодам</h2>
+    <ul>
+        <li><strong>Пользователи с использованными промокодами:</strong> {{ users_with_used_promo }}</li>
+        <li><strong>Пользователи с неиспользованными промокодами:</strong> {{ users_with_unused_promo }}</li>
+        <li><strong>Пользователи без промокодов:</strong> {{ users_without_promo }}</li>
+        <li><strong>Использованные промокоды:</strong> {{ used_promocodes }}</li>
+        <li><strong>Заказы в ожидании:</strong> {{ orders_in_pending }}</li>
+        <li><strong>Заказы с промокодами:</strong> {{ orders_with_used_promo }}</li>
+        <li><strong>Заказы без промокодов:</strong> {{ orders_without_promo }}</li>
+        <li><strong>Сумма скидок:</strong> {{ total_discount }} руб.</li>
+    </ul>
+</div>
+{% endblock %}

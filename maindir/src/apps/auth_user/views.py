@@ -13,6 +13,7 @@ from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 
+
 from apps.auth_user.forms import LoginForm, UserRegistrationForm
 
 from apps.profile.models import Profile
@@ -58,6 +59,10 @@ def user_login(request):
         try:
             profile = Profile.objects.get(user=user)
         except Profile.DoesNotExist:
+            if user.is_superuser:
+                profile = Profile.objects.create(user=user,
+                                                 photo='/users/2024/12/12/santa-cruz-bronson-cc-x0-axs-rsv-2024-491972-1_Rqlx7yL.png')
+                profile.save()
             return JsonResponse({'error': 'User or profile not found'}, status=404)
         # print(profile)
         if user is not None:

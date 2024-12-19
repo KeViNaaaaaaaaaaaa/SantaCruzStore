@@ -13,12 +13,31 @@ from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 
-
 from apps.auth_user.forms import LoginForm, UserRegistrationForm
 
 from apps.profile.models import Profile
 
+from utils.decoraters import token_required
+
 from apps.profile.models import Promocode
+from apps.catalog.models import Like
+
+
+# @token_required
+# def photo_form(request):
+#     user = request.user
+#     user_true = False
+#     try:
+#         u = []
+#         user_obj = User.objects.get(id=user['user_id'])
+#         is_liked = Like.objects.filter(user=user_obj)
+#         for i in is_liked:
+#             u.append(i.product)
+#         user_true = True
+#     except:
+#         pass
+#
+#     return {'user': user_obj if user_true else None}
 
 
 def logout_user(request):
@@ -62,6 +81,7 @@ def user_login(request):
             if user.is_superuser:
                 profile = Profile.objects.create(user=user,
                                                  photo='/users/2024/12/12/santa-cruz-bronson-cc-x0-axs-rsv-2024-491972-1_Rqlx7yL.png')
+                profile.email_confirmed = True
                 profile.save()
             return JsonResponse({'error': 'User or profile not found'}, status=404)
         # print(profile)
@@ -89,7 +109,7 @@ def user_login(request):
 def google_login(request):
     user = request.user
 
-    user_obj = User.objects.get(username=user)
+    # user_obj = User.objects.get(username=user)
 
     photo = '/users/2024/12/12/santa-cruz-bronson-cc-x0-axs-rsv-2024-491972-1_Rqlx7yL.png'
 

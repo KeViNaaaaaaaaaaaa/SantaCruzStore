@@ -4,7 +4,7 @@
 
 {% block content %}
     <h1>Edit Profile</h1>
-    <form action="{% url 'profile_edit' %}" method="post" enctype="multipart/form-data">
+    <form action="{% url 'profile_edit' %}" class="form-auth" method="post" enctype="multipart/form-data">
         {{ user_form.as_p }}
         {{ profile_form.as_p }}
         {% csrf_token %}

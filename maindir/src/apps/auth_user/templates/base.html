@@ -10,16 +10,17 @@
 </head>
 <body>
     <div id="header">
-        <div class="header-left">
+        <div class="hamburger" id="hamburger">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </div>
+
+        <div class="header-left menu" id="menu">
             <a href="{% url 'home' %}">Главная</a>
             <a href="{% url 'bike_catalog' %}">Каталог</a>
             <a href="{% url 'cart_detail' %}">Корзина</a>
-            {% if not user.is_authenticated %}
-            <a href="{% url 'login' %}">Профиль</a>
-            {% endif %}
-            {% if user.is_authenticated %}
             <a href="{% url 'profile' %}">Профиль</a>
-            {% endif %}
             {% if user.is_staff %}
             <a href="{% url 'admin_analytics' %}">Аналитика</a>
             {% endif %}
@@ -40,5 +41,38 @@
         {% block content %}
         {% endblock %}
     </div>
+
+    <footer id="footer">
+        <div class="footer-content">
+            <div class="footer-section feedback">
+                <h4>Обратная связь</h4>
+                <form method="post" action="{% url 'feedback' %}" class="form-auth">
+                    {% csrf_token %}
+                    {{ feedback_form.as_p }}
+                    <button type="submit" class="btn btn-dark">Отправить письмо</button>
+                </form>
+            </div>
+            <div class="footer-section links">
+                <h4>Контакты</h4>
+                <ul>
+                    <li><a href="https://t.me/your_telegram" target="_blank"><i class="fab fa-telegram"></i> Telegram</a></li>
+                    <li><a href="https://github.com/your_github" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
+                    <li><a href="mailto:your_email@example.com"><i class="fas fa-envelope"></i> Почта</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2023 My Website. Все права защищены.
+        </div>
+    </footer>
+
+<script>
+        const hamburger = document.getElementById('hamburger');
+        const menu = document.getElementById('menu');
+
+        hamburger.addEventListener('click', () => {
+            menu.classList.toggle('active');
+});
+    </script>
 </body>
 </html>

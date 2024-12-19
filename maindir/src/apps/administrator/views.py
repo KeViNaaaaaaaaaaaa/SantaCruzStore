@@ -13,6 +13,7 @@ from apps.profile.models import Promocode
 def admin_analytics(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
+    users = User.objects.all()
 
     products = Product.objects.all()
     likes = Like.objects.all()
@@ -136,6 +137,7 @@ def admin_analytics(request):
         'total_discount': total_discount,
         'start_date': start_date,
         'end_date': end_date,
+        'users': users,
     }
     return render(request, 'admin_analytics.html', context)
 
@@ -153,8 +155,3 @@ def user_analytics(request, user_id):
         'total_orders': total_orders,
     }
     return render(request, 'user_analytics.html', context)
-
-@staff_member_required
-def user_list(request):
-    users = User.objects.all()
-    return render(request, 'user_list.html', {'users': users})

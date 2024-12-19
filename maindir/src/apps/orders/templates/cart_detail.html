@@ -21,7 +21,7 @@
 
     <p class="total-price">Total Price: ${{ total_price }}</p>
 
-    <form method="get" action="{% url 'cart_detail' %}">
+    <form method="get" class="form-auth" action="{% url 'cart_detail' %}">
         <label for="promocode">Промокод:</label>
         <input type="text" id="promocode" name="promocode" class="promocode" value="{{ request.GET.promocode }}">
         <button type="submit">promo</button>

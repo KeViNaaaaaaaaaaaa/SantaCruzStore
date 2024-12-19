@@ -45,6 +45,16 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+#content-analytics {
+    padding: 20px;
+    background-color: #fff;
+    margin: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 100px;
+}
+
 h1 {
     color: #333;
 }
@@ -58,8 +68,23 @@ p {
     color: #666;
 }
 
+
 form {
     margin-top: 20px;
+}
+
+.form-all {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.form-auth {
+    padding-right: 20px;
 }
 
 form p {
@@ -70,11 +95,11 @@ form input[type="text"],
 form input[type="email"],
 form input[type="date"],
 form input[type="file"] {
-    width: 100%;
     padding: 10px;
     margin: 5px 0;
     border: 1px solid #ccc;
     border-radius: 4px;
+    width: 100%;
 }
 
 form input[type="submit"] {
@@ -189,8 +214,9 @@ form input[type="submit"]:hover {
 .filter-form {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     margin-bottom: 20px;
+    justify-content: space-around;
+
 }
 
 .filter-group {
@@ -385,4 +411,138 @@ form input[type="submit"]:hover {
 #form_like{
     text-align: right;
     margin-top: 0px;
+}
+
+/* Подвал */
+#footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    gap: 100px;
+}
+
+.footer-section {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.footer-section:last-child {
+    margin-right: 0;
+}
+
+.footer-section h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-section ul li a:hover {
+    color: #00bcd4;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+/* Кнопка в форме обратной связи */
+.btn-dark {
+    background-color: #555;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-dark:hover {
+    background-color: #00bcd4;
+}
+
+@media (max-width: 768px) {
+    #content-analytics {
+        display: inline;
+    }
+    .footer-content{
+        display: inline;
+    }
+}
+
+textarea {
+    resize: none;
+    overflow: auto;
+}
+
+.hamburger {
+    display: none; /* Скрываем на больших экранах */
+    flex-direction: column;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.hamburger-line {
+    width: 25px;
+    height: 3px;
+    background-color: #000; /* Цвет линий */
+    margin: 4px 0;
+}
+
+/* Меню */
+.menu {
+    display: flex;
+    gap: 20px;
+}
+
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+
+    .menu {
+        display: none;
+    }
+
+    .menu.active {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #333;
+        position: absolute;
+        top: 105px;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+    }
+
+    .menu.active a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 18px;
+        margin: 10px 0;
+    }
 }

@@ -9,22 +9,18 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 from utils.decoraters import token_required
+from django.contrib.auth.models import AnonymousUser
 
-from ..profile.models import Profile
+from apps.feedback.forms import FeedbackCreateForm
+from apps.profile.models import Profile
 
 
 def home(request):
-    photo_true = False
-    try:
-        profile = request.user.profile
-        photo_true = True
-    except:
-        pass
     now = timezone.now()
-    ten_minutes_ago = now - timedelta(days=7)
+    seven_days_ago = now - timedelta(days=7)
 
     products = Product.objects.all()
-    order_item = OrderItem.objects.filter(created_at__range=(ten_minutes_ago, now))
+    order_item = OrderItem.objects.filter(created_at__range=(seven_days_ago, now))
     sell_product = {}
     for i in products:
         sell_product.setdefault(f'{i}|{i.build}', 0)
@@ -32,46 +28,35 @@ def home(request):
             if j.product == i and j.product.build == i.build:
                 sell_product[f'{i}|{i.build}'] += j.quantity
     sell_product = sorted(sell_product.items(), key=lambda x: (-x[1], x[0]))
-    print(sell_product)
-    print(products)
 
     bikes = []
     for product_name_build, _ in sell_product[:4]:
         name, build = product_name_build.split('|')
-        print(name)
-        print(build)
         product = Product.objects.filter(name=name, build=build).first()
-        print(product)
         if product:
             bikes.append(product)
-    print(bikes)
-    return render(request, 'home.html', {'products': bikes, 'photo': profile.photo.url if photo_true else None})
+    return render(request, 'home.html', {'products': bikes})
 
 
 def product_detail(request, product_id):
-    photo_true = False
-    try:
-        profile = request.user.profile
-        photo_true = True
-    except:
-        pass
     product = get_object_or_404(Product, id=product_id)
     product.popularity += 1
     product.save()
     return render(request, 'product_detail.html',
-                  {'product': product, 'photo': profile.photo.url if photo_true else None})
+                  {'product': product})
 
-@token_required
+
 def bike_catalog(request):
-    #костылек
+    if isinstance(request.user, AnonymousUser):
+        pass
+    else:
+
     products = Product.objects.all()
     user_true = False
     try:
         user = request.user
         u = []
         user_obj = User.objects.get(id=user['user_id'])
-        profile = Profile.objects.get(user=user_obj)
-        print(profile)
         is_liked = Like.objects.filter(user=user_obj)
         for i in is_liked:
             u.append(i.product)
@@ -142,7 +127,6 @@ def bike_catalog(request):
         'min_price': min_price,
         'max_price': max_price,
         'sort_by': sort_by,
-        'photo': profile.photo.url if user_true else None,
         'is_liked': u if user_true else None,
         'user': user_obj if user_true else None,
     })
@@ -151,7 +135,6 @@ def bike_catalog(request):
 def bike_liked(request):
     user = request.user
     user_obj = User.objects.get(id=user['user_id'])
-    profile = Profile.objects.get(user=user_obj)
     print(user)
     is_liked = Like.objects.filter(user=user_obj)
     print(is_liked)
@@ -166,4 +149,4 @@ def bike_liked(request):
     #     else:
     #         return redirect('login')
     #
-    return render(request, 'liked_bikes.html', {'is_liked': is_liked, 'user': user_obj, 'photo': profile.photo.url})
+    return render(request, 'liked_bikes.html', {'is_liked': is_liked, 'user': user_obj})

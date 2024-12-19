@@ -4,7 +4,6 @@ from functools import wraps
 from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.contrib.auth.models import AnonymousUser
 from utils.helpers import decode_jwt, create_jwt
 import jwt
 from django.contrib.auth import logout
@@ -57,11 +56,9 @@ from apps.profile.models import Profile
 def token_required(f):
     @wraps(f)
     def decorated(request, *args, **kwargs):
-        if isinstance(request.user, AnonymousUser):
-            return f(request, *args, **kwargs)
         token = request.COOKIES.get('access_token')
         if not token:
-            return JsonResponse({'error': 'Token is missing'}, status=401)
+            return redirect('login')
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         except jwt.ExpiredSignatureError:
@@ -113,7 +110,7 @@ def email_verified_required(f):
             user = User.objects.get(username=user_payload)
             profile = Profile.objects.get(user=user)
         except (User.DoesNotExist, Profile.DoesNotExist):
-            return JsonResponse({'error': 'User or profile not found'}, status=404)
+            return redirect('login')
 
         if not profile.email_confirmed:
             return JsonResponse({'error': 'Email not verified'}, status=403)

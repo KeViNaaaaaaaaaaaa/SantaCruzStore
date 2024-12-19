@@ -1,6 +1,15 @@
 import jwt
 import datetime
-from django.conf import settings
+from config import settings
+
+
+def get_client_ip(request):
+    """
+    Get user's IP
+    """
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    ip = x_forwarded_for.split(',')[0] if x_forwarded_for else request.META.get('REMOTE_ADDR')
+    return ip
 
 
 def create_jwt(user_id, user_name, token_type='access'):

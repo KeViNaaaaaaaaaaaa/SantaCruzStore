@@ -27,6 +27,23 @@ from allauth.socialaccount.models import SocialAccount
 import string
 
 
+def photo_form(request):
+    user = request.user
+    photo_prof = False
+    if isinstance(user, dict):
+        profile_obj = Profile.objects.get(user=user['user_id'])
+        photo_prof = True
+    else:
+        try:
+            profile_obj = Profile.objects.get(user=user)
+            print(profile_obj)
+            photo_prof = True
+        except:
+            pass
+        print(photo_prof)
+    return {'photo': profile_obj.photo.url if photo_prof else None}
+
+
 @email_verified_required
 @token_required
 def profile_edit(request):
@@ -62,23 +79,19 @@ def profile(request):
         response.delete_cookie('access_token')
         response.delete_cookie('refresh_token')
         return response
-
     user = request.user
     user_obj = User.objects.get(username=user['user_name'])
     orders = Order.objects.filter(user=user_obj)
     django_login(request, user_obj, backend='django.contrib.auth.backends.ModelBackend')
-    print(user_obj)
     profile_obj = Profile.objects.get(user=user_obj)
-
-    messages_to_display = messages.get_messages(request)
-    print(messages_to_display)
 
     return render(request, 'profile.html', {
         'user_obj': user_obj,
         'profile_obj': profile_obj,
-        'photo': profile_obj.photo.url if profile_obj.photo else None,
         'orders': orders,
     })
+
+
 
 
 @token_required

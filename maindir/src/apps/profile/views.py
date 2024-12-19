@@ -30,17 +30,12 @@ import string
 def photo_form(request):
     user = request.user
     photo_prof = False
-    if isinstance(user, dict):
-        profile_obj = Profile.objects.get(user=user['user_id'])
+    try:
+        profile_obj = Profile.objects.get(user=user)
+        print(profile_obj)
         photo_prof = True
-    else:
-        try:
-            profile_obj = Profile.objects.get(user=user)
-            print(profile_obj)
-            photo_prof = True
-        except:
-            pass
-        print(photo_prof)
+    except:
+        pass
     return {'photo': profile_obj.photo.url if photo_prof else None}
 
 
@@ -48,14 +43,10 @@ def photo_form(request):
 @token_required
 def profile_edit(request):
     user = request.user
-    try:
-        user_obj = User.objects.get(id=user['user_id'])
-        profile_obj = Profile.objects.get(user=user_obj)
-    except (User.DoesNotExist, Profile.DoesNotExist):
-        return JsonResponse({'error': 'User or profile not found'}, status=404)
+    profile_obj = Profile.objects.get(user=user)
 
     if request.method == 'POST':
-        user_form = UserEditForm(request.POST, instance=user_obj)
+        user_form = UserEditForm(request.POST, instance=user)
         profile_form = ProfileEditForm(request.POST, request.FILES, instance=profile_obj)
 
         if user_form.is_valid() and profile_form.is_valid():
@@ -63,7 +54,7 @@ def profile_edit(request):
             profile_form.save()
             return redirect('profile')
     else:
-        user_form = UserEditForm(instance=user_obj)
+        user_form = UserEditForm(instance=user)
         profile_form = ProfileEditForm(instance=profile_obj)
 
     return render(request, 'profile_edit.html', {
@@ -80,13 +71,12 @@ def profile(request):
         response.delete_cookie('refresh_token')
         return response
     user = request.user
-    user_obj = User.objects.get(username=user['user_name'])
-    orders = Order.objects.filter(user=user_obj)
-    django_login(request, user_obj, backend='django.contrib.auth.backends.ModelBackend')
-    profile_obj = Profile.objects.get(user=user_obj)
+    orders = Order.objects.filter(user=user)
+    django_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+    profile_obj = Profile.objects.get(user=user)
 
     return render(request, 'profile.html', {
-        'user_obj': user_obj,
+        'user': user,
         'profile_obj': profile_obj,
         'orders': orders,
     })
@@ -182,8 +172,7 @@ def verify_done(request):
 @token_required
 def order_detail(request, order_id):
     user = request.user
-    user_obj = User.objects.get(id=user['user_id'])
-    order = get_object_or_404(Order, id=order_id, user=user_obj)
+    order = get_object_or_404(Order, id=order_id, user=user)
     return render(request, 'order_detail.html', {'order': order})
 
 
@@ -191,8 +180,7 @@ def order_detail(request, order_id):
 @token_required
 def order_delete(request, order_id):
     user = request.user
-    user_obj = User.objects.get(id=user['user_id'])
-    order = get_object_or_404(Order, id=order_id, user=user_obj)
+    order = get_object_or_404(Order, id=order_id, user=user)
     order.delete()
     return redirect('profile')
 
@@ -200,31 +188,30 @@ def order_delete(request, order_id):
 @token_required
 def profile_delete(request):
     user = request.user
-    user_obj = User.objects.get(id=user['user_id'])
-    profile = Profile.objects.get(user=user_obj)
+    profile = Profile.objects.get(user=user)
     email_confirmed = profile.email_confirmed
 
     if email_confirmed:
-        open_orders = Order.objects.filter(user=user_obj, status='open')
+        open_orders = Order.objects.filter(user=user, status='open')
         if open_orders.exists():
             messages.error(request, 'You cannot delete your account because you have open orders.')
             return redirect('profile')
         try:
-            EmailAddress.objects.get(user=user_obj).delete()
-            SocialAccount.objects.get(user=user_obj).delete()
+            EmailAddress.objects.get(user=user).delete()
+            SocialAccount.objects.get(user=user).delete()
         except:
             pass
 
 
-        Order.objects.filter(user=user_obj).delete()
-        for i in Order.objects.filter(user=user_obj):
+        Order.objects.filter(user=user).delete()
+        for i in Order.objects.filter(user=user):
             OrderItem.objects.filter(order=i).delete()
-        Cart.objects.filter(user=user_obj).delete()
+        Cart.objects.filter(user=user).delete()
 
-    Like.objects.filter(user=user_obj).delete()
-    Profile.objects.filter(user=user_obj).delete()
+    Like.objects.filter(user=user).delete()
+    Profile.objects.filter(user=user).delete()
 
-    user_obj.delete()
+    user.delete()
 
     response = render(request, 'home.html', {'message': 'Logged out successfully'})
     response.delete_cookie('access_token')

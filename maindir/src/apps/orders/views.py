@@ -12,9 +12,8 @@ from django.contrib.auth.models import User
 @token_required
 def add_to_cart(request, product_id):
     user = request.user
-    user_obj = User.objects.get(id=user['user_id'])
     product = get_object_or_404(Product, id=product_id)
-    cart_item, created = Cart.objects.get_or_create(user=user_obj, product=product)
+    cart_item, created = Cart.objects.get_or_create(user=user, product=product)
     if not created:
         cart_item.quantity += 1
         cart_item.save()
@@ -25,8 +24,7 @@ def add_to_cart(request, product_id):
 @token_required
 def remove_from_cart(request, cart_item_id):
     user = request.user
-    user_obj = User.objects.get(id=user['user_id'])
-    cart_item = get_object_or_404(Cart, id=cart_item_id, user=user_obj)
+    cart_item = get_object_or_404(Cart, id=cart_item_id, user=user)
     cart_item.delete()
     return redirect('cart_detail')
 
@@ -35,17 +33,15 @@ def remove_from_cart(request, cart_item_id):
 @token_required
 def cart_detail(request):
     user = request.user
-    user_obj = User.objects.get(id=user['user_id'])
 
-
-    cart_items = Cart.objects.filter(user=user_obj)
+    cart_items = Cart.objects.filter(user=user)
     total_price = round(sum(item.product.price * item.quantity for item in cart_items), 2)
 
     promocode = request.GET.get('promocode')
     request.session['promo_valid'] = False
-    print(user_obj.email)
+    print(user.email)
     try:
-        promo = Promocode.objects.get(email=user_obj.email)
+        promo = Promocode.objects.get(email=user.email)
         print(promocode, promo.promocode)
         if promocode == promo.promocode and promo.val_of_activate == 1:
             total_price = round((total_price * 90 / 100), 2)
@@ -57,7 +53,7 @@ def cart_detail(request):
         if not cart_items:
             return redirect('cart_detail')
 
-        order = Order.objects.create(user=user_obj, total_price=total_price)
+        order = Order.objects.create(user=user, total_price=total_price)
         for cart_item in cart_items:
             OrderItem.objects.create(
                 order=order,
@@ -80,4 +76,4 @@ def cart_detail(request):
         order.save()
         promo.save()
         return redirect('order_detail', order_id=order.id)
-    return render(request, 'cart_detail.html', {'cart_items': cart_items, 'user': user_obj, 'total_price': total_price})
+    return render(request, 'cart_detail.html', {'cart_items': cart_items, 'user': user, 'total_price': total_price})

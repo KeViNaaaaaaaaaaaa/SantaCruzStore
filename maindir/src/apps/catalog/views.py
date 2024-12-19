@@ -11,7 +11,6 @@ from django.contrib.auth.models import User
 from utils.decoraters import token_required
 from django.contrib.auth.models import AnonymousUser
 
-from apps.feedback.forms import FeedbackCreateForm
 from apps.profile.models import Profile
 
 
@@ -47,17 +46,16 @@ def product_detail(request, product_id):
 
 
 def bike_catalog(request):
-    if isinstance(request.user, AnonymousUser):
-        pass
-    else:
+    # if isinstance(request.user, AnonymousUser):
+    #     pass
+    # else:
 
     products = Product.objects.all()
     user_true = False
     try:
         user = request.user
         u = []
-        user_obj = User.objects.get(id=user['user_id'])
-        is_liked = Like.objects.filter(user=user_obj)
+        is_liked = Like.objects.filter(user=user)
         for i in is_liked:
             u.append(i.product)
         user_true = True
@@ -67,7 +65,7 @@ def bike_catalog(request):
         if user_true:
             product_id = request.POST.get('product_id')
             product = get_object_or_404(Product, id=product_id)
-            like, created = Like.objects.get_or_create(user=user_obj, product=product)
+            like, created = Like.objects.get_or_create(user=user, product=product)
             if not created:
                 like.delete()
             return redirect('bike_catalog')
@@ -128,15 +126,13 @@ def bike_catalog(request):
         'max_price': max_price,
         'sort_by': sort_by,
         'is_liked': u if user_true else None,
-        'user': user_obj if user_true else None,
     })
 
 @token_required
 def bike_liked(request):
     user = request.user
-    user_obj = User.objects.get(id=user['user_id'])
     print(user)
-    is_liked = Like.objects.filter(user=user_obj)
+    is_liked = Like.objects.filter(user=user)
     print(is_liked)
 
     # if request.method == 'POST':
@@ -149,4 +145,4 @@ def bike_liked(request):
     #     else:
     #         return redirect('login')
     #
-    return render(request, 'liked_bikes.html', {'is_liked': is_liked, 'user': user_obj})
+    return render(request, 'liked_bikes.html', {'is_liked': is_liked, 'user': user})

@@ -546,3 +546,58 @@ textarea {
         margin: 10px 0;
     }
 }
+
+.order-card-profile{
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.order-card h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.order-card p {
+    margin: 5px 0;
+}
+
+.order-products-profile {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.product-item-profile {
+    text-align: center;
+    width: 60px;
+}
+
+.product-image-profile {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Делаем изображение круглым */
+    object-fit: cover; /* Подгоняем изображение под размер */
+    border: 2px solid #ddd;
+}
+
+.view-order-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    text-align: center;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.view-order-button:hover {
+    background-color: #0056b3;
+}

@@ -60,7 +60,7 @@ def token_required(f):
         if not token:
             return redirect('login')
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         except jwt.ExpiredSignatureError:
             refresh_token_value = request.COOKIES.get('refresh_token')
             if not refresh_token_value:
@@ -82,9 +82,7 @@ def token_required(f):
                     return response
                 else:
                     logout(request)
-                    return HttpResponseRedirect("/api/auth/login")
-                    # return render(request, 'login.html')
-                    # return JsonResponse({'error': 'Invalid token type'}, status=400)
+                    return HttpResponseRedirect("login")
 
             except jwt.ExpiredSignatureError:
                 return JsonResponse({'error': 'Refresh token expired'}, status=401)
@@ -94,7 +92,6 @@ def token_required(f):
         except jwt.InvalidTokenError:
             return JsonResponse({'error': 'Invalid token'}, status=401)
 
-        request.user = payload
         return f(request, *args, **kwargs)
 
     return decorated

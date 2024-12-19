@@ -143,14 +143,16 @@ def admin_analytics(request):
 
 @staff_member_required
 def user_analytics(request, user_id):
-    user = User.objects.get(id=user_id)
-    orders = Order.objects.filter(user=user, status='Delivered')
+    user = request.user
+    user_name = User.objects.get(id=user_id)
+    orders = Order.objects.filter(user=user_name, status='Delivered')
 
     total_spent = orders.aggregate(total=Sum('total_price'))['total'] or 0
     total_orders = orders.count()
 
     context = {
         'user': user,
+        'user_name': user_name,
         'total_spent': total_spent,
         'total_orders': total_orders,
     }

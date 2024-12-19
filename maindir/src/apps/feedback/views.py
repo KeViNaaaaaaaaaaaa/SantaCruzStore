@@ -24,7 +24,6 @@ def feedback_create_view(request):
             feedback.user = request.user
         feedback.save()
 
-        # Отправка email
         user = User.objects.get(id=feedback.user_id) if feedback.user_id else None
         message = render_to_string('feedback_email_send.html', {
             'email': feedback.email,

@@ -4,62 +4,68 @@
 
 {% block content %}
     <h1>Your Profile</h1>
-    <p>Welcome to your profile, {{ user_obj.username }}.</p>
+    <p>Welcome to your profile, {{ user.username }}.</p>
 
     <div class="profile_subjects">
         <div class="profile-info">
-        <h2>Personal Information</h2>
-        <p><strong>First Name:</strong> {{ user_obj.first_name }}</p>
-        <p><strong>Last Name:</strong> {{ user_obj.last_name }}</p>
-        <p><strong>Email:</strong> {{ user_obj.email }}</p>
-        <p><strong>Date of Birth:</strong> {{ profile_obj.date_of_birth }}</p>
-        <p><strong>Photo:</strong></p>
-        {% if photo %}
-            <img src="{{ photo }}" alt="Profile Photo" width="150">
-        {% else %}
-            <p>No photo available.</p>
-        {% endif %}
+            <h2>Personal Information</h2>
+            <p><strong>First Name:</strong> {{ user.first_name }}</p>
+            <p><strong>Last Name:</strong> {{ user.last_name }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Date of Birth:</strong> {{ profile_obj.date_of_birth }}</p>
+            <p><strong>Photo:</strong></p>
+            {% if photo %}
+                <img src="{{ photo }}" alt="Profile Photo" width="150">
+            {% else %}
+                <p>No photo available.</p>
+            {% endif %}
+        </div>
+
+        <div class="profile-actions">
+            <a href="{% url 'profile_edit' %}" class="edit-button">Edit Profile</a>
+            {% if not user.is_staff %}
+            <a href="{% url 'profile_delete' %}" class="edit-button">Delete Profile</a>
+            {% endif %}
+
+            {% if not profile_obj.email_confirmed %}
+            <form action="{% url 'profile_email_for_verify' %}" method="get" class="profile_email_for_verify">
+                {% csrf_token %}
+                <button type="submit" class="verify-email-button">Verify Email</button>
+            </form>
+            {% else %}
+            <p>Account verified.</p>
+            {% endif %}
+
+            <form action="{% url 'logout' %}" method="post" class="logout-form">
+                {% csrf_token %}
+                <button type="submit" class="logout-button">Logout</button>
+            </form>
+        </div>
     </div>
-
-    <div class="profile-actions">
-        <a href="{% url 'profile_edit' %}" class="edit-button">Edit Profile</a>
-        {% if not user.is_staff %}
-        <a href="{% url 'profile_delete' %}" class="edit-button">Delete Profile</a>
-        {% endif %}
-
-        {% if not profile_obj.email_confirmed %}
-        <form action="{% url 'profile_email_for_verify' %}" method="get" class="profile_email_for_verify">
-            {% csrf_token %}
-            <button type="submit" class="verify-email-button">Verify Email</button>
-        </form>
-        {% else %}
-        <p>Account verified.</p>
-        {% endif %}
-
-        <form action="{% url 'logout' %}" method="post" class="logout-form">
-            {% csrf_token %}
-            <button type="submit" class="logout-button">Logout</button>
-        </form>
-    </div>
-    </div>
-
-
 
     <div class="site_info">
-    <div class="orders_info">
-        <h1>Order List</h1>
-        <ul>
+        <div class="orders_info">
+            <h1>Order List</h1>
             {% for order in orders %}
-                <li>
-                    <a href="{% url 'order_detail' order.id %}">Order #{{ order.id }}</a>
-                    - ${{ order.total_price }} - {{ order.status }}
-                </li>
+                <div class="order-card-profile">
+                    <h2>Order #{{ order.id }}</h2>
+                    <p><strong>Status:</strong> {{ order.status }}</p>
+                    <p><strong>Total Price:</strong> ${{ order.total_price }}</p>
+
+                    <div class="order-products-profile">
+                        {% for item in order.items.all %}
+                            <div class="product-item-profile">
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="product-image-profile">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'order_detail' order.id %}" class="view-order-button">View Order</a>
+                </div>
             {% endfor %}
-        </ul>
-    </div>
-    <div class="group_info">
-        <h1>Group info</h1>
-    </div>
+        </div>
+
+        <div class="group_info">
+            <h1>Group info</h1>
+        </div>
     </div>
 {% endblock %}
-

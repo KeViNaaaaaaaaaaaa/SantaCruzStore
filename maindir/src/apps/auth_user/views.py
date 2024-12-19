@@ -84,14 +84,10 @@ def user_login(request):
                 profile.email_confirmed = True
                 profile.save()
             return JsonResponse({'error': 'User or profile not found'}, status=404)
-        # print(profile)
         if user is not None:
 
             access_token = create_jwt(user.id, user.username, token_type='access')
             refresh_token = create_jwt(user.id, user.username, token_type='refresh')
-
-            request.session['access_token'] = access_token
-            request.session['refresh_token'] = refresh_token
 
             django_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             # print(request.user.is_authenticated)
@@ -108,8 +104,6 @@ def user_login(request):
 
 def google_login(request):
     user = request.user
-
-    # user_obj = User.objects.get(username=user)
 
     photo = '/users/2024/12/12/santa-cruz-bronson-cc-x0-axs-rsv-2024-491972-1_Rqlx7yL.png'
 

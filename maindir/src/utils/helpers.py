@@ -32,7 +32,6 @@ def create_jwt(user_id, user_name, token_type='access'):
 def decode_jwt(token):
     try:
         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
-        print(payload)
         return payload
     except jwt.ExpiredSignatureError:
         return None
